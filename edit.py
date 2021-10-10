@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter.constants import BOTH
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 import idlelib.colorizer as ic
 import idlelib.percolator as ip
@@ -7,6 +8,7 @@ import re
 window = tk.Tk()
 textbox = tk.Text()
 menubar = tk.Menu()
+terminalOutput = tk.Text(height=7)
 
 currentFile = ""
 
@@ -101,11 +103,16 @@ def saveasDialog():
         pass
 
 def run():
+    global currentFile # make sure it's saved
+    global saved
+    if not saved or currentFile == "":
+        saveDialog()
     pass
 
 def new():
-    global saved
-    if not saved:
+    global saved # make sure it's saved
+    global currentFile
+    if not saved or currentFile == "":
         saveDialog()
     textbox.delete('1.0', tk.END)
     saved = True
@@ -116,6 +123,7 @@ def main():
     initTextBox()
     configureWindow()
     textbox.pack(fill=tk.BOTH, expand=1)
+    terminalOutput.pack(fill=BOTH,expand=1)
     window.mainloop()
 
 if __name__ == "__main__":
