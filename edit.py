@@ -4,6 +4,8 @@ from tkinter.filedialog import asksaveasfilename, askopenfilename
 import idlelib.colorizer as ic
 import idlelib.percolator as ip
 import re
+import os
+import subprocess
 
 window = tk.Tk()
 textbox = tk.Text()
@@ -107,7 +109,17 @@ def run():
     global saved
     if not saved or currentFile == "":
         saveDialog()
-    pass
+    command = ""
+    if os.name == "nt": # if it's windows
+        command = f"python {currentFile}"
+    else: # if it's linux or macos
+        command = f"python3 {currentFile}"
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    output, error = process.communicate()
+    terminalOutput.insert("1.0", "The script ended!\n\n")
+    terminalOutput.insert("1.0", output)
+    terminalOutput.insert("1.0", error)
+    
 
 def new():
     global saved # make sure it's saved
