@@ -51,6 +51,7 @@ def initMenu():
     filesubmenu.add_separator()
     filesubmenu.add_command(label="Exit", command=exit)
     menubar.add_cascade(label='File', menu=filesubmenu)
+    menubar.add_command(label="Run Script", command=run)
 
 def fileChanged(key):
     global saved
@@ -99,7 +100,13 @@ def saveasDialog():
     except:
         pass
 
+def run():
+    pass
+
 def new():
+    global saved
+    if not saved:
+        saveDialog()
     textbox.delete('1.0', tk.END)
     saved = True
     changeCurrentFile("")
