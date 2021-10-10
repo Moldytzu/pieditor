@@ -5,7 +5,6 @@ import idlelib.percolator as ip
 import re
 
 window = tk.Tk()
-
 textbox = tk.Text()
 menubar = tk.Menu()
 
@@ -27,26 +26,36 @@ def initSyntaxHighlighting():
 
     ip.Percolator(textbox).insertfilter(cdg)
 
+def updateTitle():
+    if not saved:
+        if currentFile != "":
+            window.title(f"pyedit: {currentFile}*")
+        else:
+            window.title("pyedit*")
+    else:
+        if currentFile != "":
+            window.title(f"pyedit: {currentFile}")
+        else:
+            window.title("pyedit")
+
 def initTextBox():
     initSyntaxHighlighting()
     textbox.bind("<Key>",fileChanged)
 
 def initMenu():
     filesubmenu = tk.Menu(tearoff=0)
-    filesubmenu.add_command(label="New")
+    filesubmenu.add_command(label="New", command=new)
     filesubmenu.add_command(label="Open", command=openDialog)
-    filesubmenu.add_command(label="Save")
-    filesubmenu.add_command(label="Save As")
+    filesubmenu.add_command(label="Save", command=saveDialog)
+    filesubmenu.add_command(label="Save As", command=saveasDialog)
     filesubmenu.add_separator()
     filesubmenu.add_command(label="Exit", command=exit)
     menubar.add_cascade(label='File', menu=filesubmenu)
 
 def fileChanged(key):
+    global saved
     saved = False
-    if currentFile != "":
-        window.title(f"pyedit: {currentFile}*")
-    else:
-        window.title("pyedit*")
+    updateTitle()
 
 def configureWindow():
     window.config(menu=menubar)
@@ -55,10 +64,7 @@ def configureWindow():
 def changeCurrentFile(newFile):
     global currentFile
     currentFile = newFile
-    if currentFile != "":
-        window.title(f"pyedit: {currentFile}")
-    else:
-        window.title("pyedit")
+    updateTitle()
 
 def openDialog():
     filepath = askopenfilename(filetypes=[("Python Scripts", "*.py")])
@@ -70,11 +76,39 @@ def openDialog():
     except:
         pass
 
+def saveDialog():
+    global saved
+    if currentFile == "":
+        saveasDialog()
+    else:
+        saved = True
+        updateTitle()
+        with open(currentFile, "w") as f:
+            f.write(textbox.get("1.0", tk.END))
+            
+
+def saveasDialog():
+    global saved
+    filepath = asksaveasfilename(filetypes=[("Python Scripts", "*.py")])
+    try:
+        saved = True
+        updateTitle()
+        changeCurrentFile(filepath)
+        with open(filepath, "w") as f:
+            f.write(textbox.get("1.0", tk.END))
+    except:
+        pass
+
+def new():
+    textbox.delete('1.0', tk.END)
+    saved = True
+    changeCurrentFile("")
+
 def main():
     initMenu()
     initTextBox()
     configureWindow()
-    textbox.pack()
+    textbox.pack(fill=tk.BOTH, expand=1)
     window.mainloop()
 
 if __name__ == "__main__":
