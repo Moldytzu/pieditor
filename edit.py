@@ -29,14 +29,14 @@ def initSyntaxHighlighting():
 def updateTitle():
     if not saved:
         if currentFile != "":
-            window.title(f"pyedit: {currentFile}*")
+            window.title(f"PIeditor: {currentFile}*")
         else:
-            window.title("pyedit*")
+            window.title("PIeditor*")
     else:
         if currentFile != "":
-            window.title(f"pyedit: {currentFile}")
+            window.title(f"PIeditor: {currentFile}")
         else:
-            window.title("pyedit")
+            window.title("PIeditor")
 
 def initTextBox():
     initSyntaxHighlighting()
@@ -59,7 +59,7 @@ def fileChanged(key):
 
 def configureWindow():
     window.config(menu=menubar)
-    window.title("pyedit")
+    window.title("PIeditor")
 
 def changeCurrentFile(newFile):
     global currentFile
