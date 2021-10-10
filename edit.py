@@ -28,7 +28,7 @@ def initSyntaxHighlighting():
 def initMenu():
     filesubmenu = tk.Menu(tearoff=0)
     filesubmenu.add_command(label="New")
-    filesubmenu.add_command(label="Open")
+    filesubmenu.add_command(label="Open", command=openDialog)
     filesubmenu.add_command(label="Save")
     filesubmenu.add_command(label="Save As")
     filesubmenu.add_separator()
@@ -42,6 +42,17 @@ def configureWindow():
 def changeCurrentFile(newFile):
     global currentFile
     currentFile = newFile
+    window.title(f"pyedit: {currentFile}")
+
+def openDialog():
+    filepath = askopenfilename(filetypes=[("Python Scripts", "*.py")])
+    try:
+        with open(filepath, 'r') as f:
+            textbox.delete('1.0', tk.END)
+            textbox.insert('1.0', f.read())
+            changeCurrentFile(filepath)
+    except:
+        pass
 
 def main():
     initMenu()
