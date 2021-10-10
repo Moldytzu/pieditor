@@ -6,6 +6,8 @@ import re
 window = tk.Tk()
 textbox = tk.Text()
 
+menubar = tk.Menu()
+
 def initSyntaxHighlighting():
     cdg = ic.ColorDelegator()
     cdg.prog = re.compile(r'\b(?P<DEFAULT>tkinter)\b|' + ic.make_pat(), re.S)
@@ -20,6 +22,24 @@ def initSyntaxHighlighting():
 
     ip.Percolator(textbox).insertfilter(cdg)
 
-initSyntaxHighlighting()
-textbox.pack()
-window.mainloop()
+def initMenu():
+    filesubmenu = tk.Menu(tearoff=0)
+    filesubmenu.add_separator()
+    menubar.add_cascade(label='File', menu=filesubmenu)
+
+def configureWindow():
+    window.config(menu=menubar)
+    window.title("pyedit")
+
+def main():
+    initMenu()
+    initSyntaxHighlighting()
+    configureWindow()
+    textbox.pack()
+    window.mainloop()
+
+if __name__ == "__main__":
+    main()
+else:
+    print("You shouldn't import this file!")
+    raise SystemExit()
