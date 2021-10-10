@@ -1,12 +1,15 @@
 import tkinter as tk
+from tkinter.filedialog import asksaveasfilename, askopenfilename
 import idlelib.colorizer as ic
 import idlelib.percolator as ip
 import re
 
 window = tk.Tk()
-textbox = tk.Text()
 
+textbox = tk.Text()
 menubar = tk.Menu()
+
+currentFile = ""
 
 def initSyntaxHighlighting():
     cdg = ic.ColorDelegator()
@@ -24,12 +27,21 @@ def initSyntaxHighlighting():
 
 def initMenu():
     filesubmenu = tk.Menu(tearoff=0)
+    filesubmenu.add_command(label="New")
+    filesubmenu.add_command(label="Open")
+    filesubmenu.add_command(label="Save")
+    filesubmenu.add_command(label="Save As")
+    filesubmenu.add_separator()
     filesubmenu.add_command(label="Exit", command=exit)
     menubar.add_cascade(label='File', menu=filesubmenu)
 
 def configureWindow():
     window.config(menu=menubar)
     window.title("pyedit")
+
+def changeCurrentFile(newFile):
+    global currentFile
+    currentFile = newFile
 
 def main():
     initMenu()
