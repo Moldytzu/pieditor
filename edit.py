@@ -10,7 +10,9 @@ import subprocess
 window = tk.Tk()
 textbox = tk.Text()
 menubar = tk.Menu()
-terminalOutput = tk.Text(height=7)
+
+if not os.name == "nt":
+    terminalOutput = tk.Frame(window,height=200)
 
 currentFile = ""
 
@@ -110,15 +112,14 @@ def run():
     if not saved or currentFile == "":
         saveDialog()
     command = ""
-    if os.name == "nt": # if it's windows
-        command = f"python {currentFile}"
-    else: # if it's linux or macos
-        command = f"python3 {currentFile}"
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    output, error = process.communicate()
-    terminalOutput.insert("1.0", "The script ended!\n\n")
-    terminalOutput.insert("1.0", output)
-    terminalOutput.insert("1.0", error)
+    try:
+        if os.name == "nt": # if it's windows
+            command = f"cmd /c python {currentFile}"
+        else: # if it's linux or macos
+            command = f"xterm -geometry 2000x2000+0+0 -into {terminalOutput.winfo_id()} -e python3 {currentFile}"
+        subprocess.Popen(command,shell=True)
+    except:
+        pass
     
 
 def new():
@@ -135,7 +136,8 @@ def main():
     initTextBox()
     configureWindow()
     textbox.pack(fill=tk.BOTH, expand=1)
-    terminalOutput.pack(fill=BOTH,expand=1)
+    if not os.name == "nt":
+        terminalOutput.pack(fill=BOTH,expand=1)
     window.mainloop()
 
 if __name__ == "__main__":
