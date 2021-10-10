@@ -24,7 +24,7 @@ def initSyntaxHighlighting():
 
 def initMenu():
     filesubmenu = tk.Menu(tearoff=0)
-    filesubmenu.add_separator()
+    filesubmenu.add_command(label="Exit", command=exit)
     menubar.add_cascade(label='File', menu=filesubmenu)
 
 def configureWindow():
