@@ -11,6 +11,8 @@ menubar = tk.Menu()
 
 currentFile = ""
 
+saved = True
+
 def initSyntaxHighlighting():
     cdg = ic.ColorDelegator()
     cdg.prog = re.compile(r'\b(?P<DEFAULT>tkinter)\b|' + ic.make_pat(), re.S)
@@ -25,6 +27,10 @@ def initSyntaxHighlighting():
 
     ip.Percolator(textbox).insertfilter(cdg)
 
+def initTextBox():
+    initSyntaxHighlighting()
+    textbox.bind("<Key>",fileChanged)
+
 def initMenu():
     filesubmenu = tk.Menu(tearoff=0)
     filesubmenu.add_command(label="New")
@@ -35,6 +41,13 @@ def initMenu():
     filesubmenu.add_command(label="Exit", command=exit)
     menubar.add_cascade(label='File', menu=filesubmenu)
 
+def fileChanged(key):
+    saved = False
+    if currentFile != "":
+        window.title(f"pyedit: {currentFile}*")
+    else:
+        window.title("pyedit*")
+
 def configureWindow():
     window.config(menu=menubar)
     window.title("pyedit")
@@ -42,7 +55,10 @@ def configureWindow():
 def changeCurrentFile(newFile):
     global currentFile
     currentFile = newFile
-    window.title(f"pyedit: {currentFile}")
+    if currentFile != "":
+        window.title(f"pyedit: {currentFile}")
+    else:
+        window.title("pyedit")
 
 def openDialog():
     filepath = askopenfilename(filetypes=[("Python Scripts", "*.py")])
@@ -56,7 +72,7 @@ def openDialog():
 
 def main():
     initMenu()
-    initSyntaxHighlighting()
+    initTextBox()
     configureWindow()
     textbox.pack()
     window.mainloop()
