@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter.constants import BOTH
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 import idlelib.colorizer as ic
 import idlelib.percolator as ip
@@ -12,7 +11,8 @@ textbox = tk.Text()
 menubar = tk.Menu()
 
 if not os.name == "nt":
-    terminalOutput = tk.Frame(window,height=200)
+    terminalOutput = tk.Frame(window,height=100, background="Black",borderwidth=2,relief=tk.RIDGE)
+    outputText = tk.Label(terminalOutput,text="Code output goes here", fg="white",height=6,bg="black")
 
 currentFile = ""
 
@@ -116,7 +116,7 @@ def run():
         if os.name == "nt": # if it's windows
             command = f"cmd /c python {currentFile}"
         else: # if it's linux or macos
-            command = f"xterm -geometry 2000x2000+0+0 -into {terminalOutput.winfo_id()} -e python3 {currentFile}"
+            command = f"xterm -geometry 2000x2000+0+0 -into {terminalOutput.winfo_id()} -e \"python3 {currentFile};echo 'The script is over. Press enter to exit the terminal.';read\""
         subprocess.Popen(command,shell=True)
     except:
         pass
@@ -137,7 +137,8 @@ def main():
     configureWindow()
     textbox.pack(fill=tk.BOTH, expand=1)
     if not os.name == "nt":
-        terminalOutput.pack(fill=BOTH,expand=1)
+        terminalOutput.pack(fill=tk.BOTH,expand=1)
+        outputText.pack(fill=tk.BOTH,expand=1)
     window.mainloop()
 
 if __name__ == "__main__":
